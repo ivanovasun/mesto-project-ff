@@ -1,29 +1,33 @@
-const container = document.querySelector(".places");
-const cardContainer = container.querySelector(".places__list");
+const container = document.querySelector('.places');
+const cardContainer = container.querySelector('.places__list');
 
-function deletCard(evt) {
-    const deletElement = evt.target.closest(".card");
+// функция удаления карточки
+function deleteCard(evt) {
+    const deletElement = evt.target.closest('.card');
     deletElement.remove();
-}
+};
 
-// @todo: Темплейт карточки
-function addCard(item) {
-    const cardTemplate = document.querySelector("#card-template").content;
-    const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
+// Функция создания карточки
+function createCard(item, callback) {
+    const cardTemplate = document.querySelector('#card-template').content;
+    const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+    const deleteButton = cardElement.querySelector('.card__delete-button');
 
-    // @todo: DOM узлы
-    cardElement.querySelector(".card__title").textContent = item.name;
-    const cardImage = cardElement.querySelector(".card__image");
-    cardImage.setAttribute("src", item.link);
-    cardImage.setAttribute("alt", item.name);
+// DOM узлы
+    cardElement.querySelector('.card__title').textContent = item.name;
+    const cardImage = cardElement.querySelector('.card__image');
+    cardImage.setAttribute('src', item.link);
+    cardImage.setAttribute('alt', item.name);
 
-    // @todo: Функция удаления карточки
-    const deletButton = cardElement.querySelector(".card__delete-button");
-    deletButton.addEventListener("click", deletCard);
+// Обработчик клика для удаления карточки 
+    deleteButton.addEventListener('click', callback);
 
-    // @todo: Добавить карточку на страницу
-    cardContainer.append(cardElement);
-}
+// Возврат готовой к выводу карточки
+    return cardElement
+};
 
-// @todo: Вывести карточки на страницу
-initialCards.forEach((item) => addCard(item));
+// Вывести карточки на страницу
+initialCards.forEach(function (item) {
+   const addCardElemnt = createCard(item, deleteCard);
+   cardContainer.append(addCardElemnt);
+});
