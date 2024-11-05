@@ -72,7 +72,6 @@ function popupImgWorking(evt) {
         functionsPopup(popupShowImg);
         popupImg.setAttribute('src', evt.target.src);
         popupImg.setAttribute('alt', evt.target.alt);
-        console.log(evt.target);
         popupShowImg.querySelector('.popup__caption').textContent = evt.target.alt;
     }
 };
