@@ -51,7 +51,6 @@ Promise.all(getInitialInfo)
         initialArray[1].forEach(function (item) {
             const addCardElemnt = createCard(item, cardFunctions, item.owner._id, myId, item._id);
             cardContainer.append(addCardElemnt);
-            console.log(initialArray);
         });
     })
     .catch((err) => {
