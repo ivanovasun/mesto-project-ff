@@ -25,3 +25,16 @@
     line-height: 17px;
   }
 }
+
+.popup__button__submit_inactive {
+  border: 1px solid rgb(0 0 0 / 0.2);
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 18px;
+  color: rgb(0 0 0 / 0.2);
+  background: transparent;
+  pointer-events: none;
+}
+
+.popup__del_card .popup__button {
+  margin-top: 38px;
+}

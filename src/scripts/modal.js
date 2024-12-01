@@ -1,5 +1,5 @@
 //функция закрытия попапа 
-export const handleEventKeyUp = (evt) => {
+const handleEventKeyUp = (evt) => {
     const popup = document.querySelector('.popup_is-opened');
     //функция закрытия попапа по клавише Esc
     if (evt.key === 'Escape') {
