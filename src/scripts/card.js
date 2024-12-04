@@ -1,10 +1,9 @@
 // Функция создания карточки
-export function createCard(item, callbacks, personAddId, itemOwnerId, cardId) {
+export function createCard(item, callbacks, personAddId, itemOwnerId, cardId, configAPIBase) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
     const likeElement = cardElement.querySelector('.card__like-button');
-    const popupDelete = document.querySelector('.popup_type_delet_card');
 
     // DOM узлы
     cardElement.querySelector('.card__title').textContent = item.name;
@@ -33,12 +32,40 @@ export function createCard(item, callbacks, personAddId, itemOwnerId, cardId) {
     if (personAddId == itemOwnerId) {
         deleteButton.classList.remove('card__delete-button_non_active');
     }
-
+    deleteButton.addEventListener('click', () => {
+        callbacks
+            .del(cardId, configAPIBase)
+            .then(() => {
+            cardElement.remove();
+        });
+    });
     likeElement.addEventListener('click', () => {
-        callbacks.like(likeElement, cardId, countLikes);
+        callbacks.like(likeElement, cardId, countLikes, configAPIBase, callbacks);
     });
     cardImage.addEventListener('click', callbacks.popupwork);
 
     // Возврат готовой к выводу карточки
     return cardElement;
+}
+
+export function likeCardElemt(cardElementLike, cardId, countLikes, configAPIBase, callbacks) {
+    if (cardElementLike.classList.contains('card__like-button_is-active')) {
+        cardElementLike.classList.remove('card__like-button_is-active');
+        callbacks
+            .delAPI(cardId, configAPIBase)
+            //обновление количества лайков
+            .then((ans) => {
+                const count = ans.likes.length;
+                countLikes.textContent = count;
+            });
+    } else {
+        cardElementLike.classList.add('card__like-button_is-active');
+        callbacks
+            .likeAPI(cardId, configAPIBase)
+            .then((ans) => {
+            //обновление количества лайков
+            const count = ans.likes.length;
+            countLikes.textContent = count;
+        });
+    }
 }

@@ -21,18 +21,9 @@ const hideInputError = (formElement, inputElement, configValidat) => {
 //функция установки кастомного сообщения при ошибках
 const setCustomMsg = (inputElement, configValidat) => {
   if (inputElement.validity.patternMismatch) {
-      //данные атрибута доступны у элемента инпута через ключевое слово dataset.
       inputElement.setCustomValidity(inputElement.dataset.errorMessageValid);
   } else {
-      if (!inputElement.value) {
-          if (inputElement.classList.contains(configValidat['inputSelectorURL'])) {
-              inputElement.setCustomValidity(inputElement.dataset.errorMessageUrl);
-          } else {
-              inputElement.setCustomValidity(inputElement.dataset.errorMessageEmpty);
-          }
-      } else {
-          inputElement.setCustomValidity('');
-      }
+      inputElement.setCustomValidity('');
   }
 };
 
@@ -57,7 +48,6 @@ const hasInvalidInput = (inputList) => {
       // Если поле не валидно, колбэк вернёт true
       // Обход массива прекратится и вся функция
       // hasInvalidInput вернёт true
-
       return !inputElement.validity.valid;
   });
 };
@@ -110,21 +100,19 @@ export const enableValidation = (configValidat) => {
 };
 
 //функция очистки сообщений валидации и смены состояния кнопки
-export function clearValidation(formElement, configVal) {
+export function clearValidation(formElement, configVal, configValidat) {
   if (configVal['errorMsgClear']) {
-      const inputList = Array.from(formElement.querySelectorAll(configVal['formSelector']));
+      const inputList = Array.from(formElement.querySelectorAll(configValidat['inputSelector']));
       inputList.forEach(function (item) {
-          const errorElement = formElement.querySelector(`.${item.id}-error`);
-          item.classList.remove(configVal['inputErrorClass']);
-          errorElement.classList.remove(configVal['errorClass']);
-          errorElement.textContent = '';
+          hideInputError(formElement, item, configValidat);
       });
   }
+  const btnElem = formElement.querySelector('.popup__button');
   if (configVal['enableBtn']) {
-      formElement.querySelector('.popup__button').disabled = false;
-      formElement.querySelector('.popup__button').classList.remove(configVal['inactiveButtonClass']);
+      btnElem.disabled = false;
+      btnElem.classList.remove(configValidat['inactiveButtonClass']);
   } else {
-      formElement.querySelector('.popup__button').disabled = true;
-      formElement.querySelector('.popup__button').classList.add(configVal['inactiveButtonClass']);
+      btnElem.disabled = true;
+      btnElem.classList.add(configValidat['inactiveButtonClass']);
   }
-}
+};

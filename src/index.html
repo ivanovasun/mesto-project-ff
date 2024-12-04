@@ -34,7 +34,7 @@
       © 2024 Mesto Russia
     </p>
   </footer>
-  <div class="popup popup_type_edit">
+  <div class="popup popup_type_edit popup_is-animated">
     <div class="popup__content">
       <button type="button" class="popup__close" aria-label="Иконка для закрытия попапа"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
@@ -47,7 +47,6 @@
         placeholder="Имя" 
         minlength="2" maxlength="40"
         pattern="[a-zA-Zа-яА-ЯёЁ\s\-]+" 
-        data-error-message-empty="Вы пропустили это поле"
         data-error-message-valid="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
         required 
         >
@@ -59,7 +58,6 @@
         class="popup__input popup__input_type_description" 
         placeholder="Занятие" 
         minlength="2" maxlength="200"  
-        data-error-message-empty="Вы пропустили это поле"
         data-error-message-valid="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
         pattern="[a-zA-Zа-яА-ЯёЁ\s\-]+"
         required
@@ -69,7 +67,7 @@
       </form>
     </div>
   </div>
-  <div class="popup popup_type_new-card">
+  <div class="popup popup_type_new-card popup_is-animated">
     <div class="popup__content">
       <button type="button" class="popup__close" aria-label="Иконка для закрытия попапа"></button>
       <h3 class="popup__title">Новое место</h3>
@@ -83,7 +81,6 @@
         minlength="2" 
         maxlength="30" 
         pattern="[a-zA-Zа-яА-ЯёЁ\s\-]+"
-        data-error-message-empty="Вы пропустили это поле"
         data-error-message-valid="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
         required
       >
@@ -95,13 +92,13 @@
         class="popup__input popup__input_type_url" 
         placeholder="Ссылка на картинку" 
         required 
-        data-error-message-url="Введите адрес сайта." >
+        >
         <span class="url-input-error popup__input-error"></span>
         <button type="submit" class="button popup__button">Создать</button>
       </form>
     </div>
   </div>
-  <div class="popup popup_type_image">
+  <div class="popup popup_type_image popup_is-animated">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close" aria-label="Иконка для закрытия попапа"></button>
       <img src="" alt="" class="popup__image">
@@ -109,17 +106,24 @@
     </div>
   </div>
 
-  <div class="popup popup_type_avatar">
+  <div class="popup popup_type_avatar popup_is-animated">
     <div class="popup__content">
-        <button type="button" class="popup__close" aria-label="Иконка для закрытия попапа"></button>
-        <h3 class="popup__title">Обновить аватар</h3>
-        <form class="popup__form" name="new-avatar" novalidate>
-            <input id="url-input" type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на аватар" required data-error-message-url="Введите ссылку на новый аватар." />
-            <span class="url-input-error popup__input-error"></span>
-            <button type="submit" class="button popup__button">Сохранить</button>
-        </form>
+      <button type="button" class="popup__close" aria-label="Иконка для закрытия попапа"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="new-avatar" novalidate>
+        <input 
+        id="url-input" 
+        type="url" 
+        name="link" 
+        class="popup__input popup__input_type_url" 
+        placeholder="Ссылка на аватар" 
+        required 
+        >
+        <span class="url-input-error popup__input-error"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
+      </form>
     </div>
-</div>
+  </div>
 
 <template id="card-template">
   <li class="places__item card">
