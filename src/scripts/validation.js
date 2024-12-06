@@ -16,6 +16,7 @@ const hideInputError = (formElement, inputElement, configValidat) => {
   inputElement.classList.remove(configValidat['inputErrorClass']);
   errorElement.classList.remove(configValidat['errorClass']);
   errorElement.textContent = '';
+  inputElement.setCustomValidity('');
 };
 
 //функция установки кастомного сообщения при ошибках
@@ -28,7 +29,7 @@ const setCustomMsg = (inputElement, configValidat) => {
 };
 
 //провека полей на валидность
-const isValid = (formElement, inputElement, configValidat) => {
+export const isValid = (formElement, inputElement, configValidat) => {
   setCustomMsg(inputElement, configValidat);
   if (!inputElement.validity.valid) {
       // showInputError теперь получает параметром форму, в которой
@@ -52,10 +53,9 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-//функция смены состояния кнопки при валидации полей
-const toggleButtonState = (inputList, buttonElement, configValidat) => {
+const toggleButtonState = (valueParamtr, buttonElement, configValidat) => {
   // Если есть хотя бы один невалидный инпут
-  if (hasInvalidInput(inputList)) {
+  if (valueParamtr) {
       // сделай кнопку неактивной
       buttonElement.disabled = true;
       buttonElement.classList.add(configValidat['inactiveButtonClass']);
@@ -80,7 +80,7 @@ export const setEventListeners = (formElement, configValidat) => {
           // Внутри колбэка вызовем isValid,
           // передав ей форму и проверяемый элемент
           isValid(formElement, inputElement, configValidat);
-          toggleButtonState(inputList, buttonElement, configValidat);
+          toggleButtonState(hasInvalidInput(inputList), buttonElement, configValidat);
       });
   });
 };
@@ -101,18 +101,13 @@ export const enableValidation = (configValidat) => {
 
 //функция очистки сообщений валидации и смены состояния кнопки
 export function clearValidation(formElement, configVal, configValidat) {
+  const inputList = Array.from(formElement.querySelectorAll(configValidat['inputSelector']));
+  const buttonElement = formElement.querySelector(configValidat['submitButtonSelector']);
+  toggleButtonState(hasInvalidInput(inputList), buttonElement, configValidat);
   if (configVal['errorMsgClear']) {
-      const inputList = Array.from(formElement.querySelectorAll(configValidat['inputSelector']));
       inputList.forEach(function (item) {
           hideInputError(formElement, item, configValidat);
+          toggleButtonState(false, buttonElement, configValidat);
       });
-  }
-  const btnElem = formElement.querySelector('.popup__button');
-  if (configVal['enableBtn']) {
-      btnElem.disabled = false;
-      btnElem.classList.remove(configValidat['inactiveButtonClass']);
-  } else {
-      btnElem.disabled = true;
-      btnElem.classList.add(configValidat['inactiveButtonClass']);
   }
 };

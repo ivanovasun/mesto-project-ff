@@ -1,7 +1,7 @@
 import './pages/index.css';
 import { createCard, likeCardElemt } from './scripts/card.js';
-import { handleEventKeyUp, handleCloseOnOverlay, handleCloseClickBtn, closeModal, functionsPopup } from './scripts/modal.js';
-import { configAPIBase, requestProfileChange, changeAvatar, requestAddImg, getInitialInfo, renderLoading, deletCard, likeCard, deletLike } from './scripts/api.js';
+import {handleCloseOnOverlay, handleCloseClickBtn, closeModal, openModal } from './scripts/modal.js';
+import { configAPIBase, requestProfileChange, changeAvatar, requestAddImg, getInitialInfo, deletCard, likeCard, deletLike } from './scripts/api.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 
 const container = document.querySelector('.places');
@@ -25,6 +25,7 @@ const formImg = document.querySelector('form[name=new-place]');
 const formAvatar = document.querySelector('form[name=new-avatar]');
 const profileImg = document.querySelector('.profile__image');
 const popupAll = document.querySelectorAll('.popup');
+const popupCloseBtns = document.querySelectorAll('.popup__close')
 
 //селекторы для работы функций валидации
 const formSelectorsForFunct = {
@@ -37,18 +38,33 @@ const formSelectorsForFunct = {
     errorClass: 'popup__input-error_active',
 };
 
-//слушатель на нажатие esc для закрытия попапа
-document.addEventListener('keydown', handleEventKeyUp);
-
-//слушатель для закрытия попапов по крестику и оверлею
+//слушатель для закрытия попапов по оверлею
 popupAll.forEach((item) => {
     item.addEventListener('mousedown', handleCloseOnOverlay);
+});
+
+//слуцшатель для закрытия попапов по крестику
+popupCloseBtns.forEach((item) => {
     item.addEventListener('click', handleCloseClickBtn);
 });
 
+//улучшение UX
+function renderLoading(configRender) {
+    let btn = configRender.modal.querySelector(configRender['popupBtn']);
+    if (configRender['isLoading']) {
+        btn.textContent = 'Сохранение...';
+    } else {
+        if (configRender['createBtn']) {
+            btn.textContent = 'Создать';
+        } else {
+            btn.textContent = 'Сохранить';
+        }
+    }
+}
+
 //функционал роботы попапа для карточек
 function popupImgWorking(evt) {
-    functionsPopup(popupShowImg);
+    openModal(popupShowImg);
     popupImg.setAttribute('src', evt.target.src);
     popupImg.setAttribute('alt', evt.target.alt);
     popupCaption.textContent = evt.target.alt;
@@ -83,8 +99,8 @@ Promise.all(getInitialInfo)
 
 //открытие и закрытие попапа редактирования аватара
 editBtnAvatar.addEventListener('click', () => {
-    functionsPopup(popupEditAvatar);
-    clearValidation(popupEditAvatar, { errorMsgClear: false, enableBtn: false }, formSelectorsForFunct);
+    openModal(popupEditAvatar);
+    clearValidation(popupEditAvatar, {errorMsgClear: false}, formSelectorsForFunct);
 });
 
 //функционал смены аватара
@@ -97,24 +113,26 @@ function handleAvatarSubmit(evt) {
             profileImg.setAttribute('style', `background-image: url(${ans.avatar}`);
         })
         .then(() => {
-            renderLoading({ modal: popupEditAvatar, popupBtn: '.popup__button', isLoading: false, createBtn: false });
             closeModal(popupEditAvatar);
             formAvatar.reset();
         })
         .catch((err) => {
             console.log(err); // выводим ошибку в консоль
+        })
+        .finally(() => {
+            renderLoading({ modal: popupEditAvatar, popupBtn: '.popup__button', isLoading: false, createBtn: false });
         });
-}
+};
 
 //обработчик события на отправку нового аватара
 popupEditAvatar.addEventListener('submit', handleAvatarSubmit);
 
 // функционал папапа редактирования профиля
 profilePopup.addEventListener('click', () => {
-    functionsPopup(popupEditProfile);
+    openModal(popupEditProfile);
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescript.textContent;
-    clearValidation(popupEditProfile, { errorMsgClear: true, enableBtn: true }, formSelectorsForFunct);
+    clearValidation(popupEditProfile, {errorMsgClear: true}, formSelectorsForFunct);
 });
 
 //функция заполнения новых данных данных профиля
@@ -122,16 +140,18 @@ function handleFormSubmitProfile(evt) {
     evt.preventDefault();
     renderLoading({ modal: popupEditProfile, popupBtn: '.popup__button', isLoading: true, createBtn: false });
     requestProfileChange(nameInput, jobInput, configAPIBase)
-        .then(() => {
-            profileTitle.textContent = nameInput.value;
-            profileDescript.textContent = jobInput.value; 
+        .then((answ) => {
+            profileTitle.textContent = answ.name;
+            profileDescript.textContent = answ.about;
         })
         .then(() => {
-            renderLoading({ modal: popupEditProfile, popupBtn: '.popup__button', isLoading: false, createBtn: false });
             closeModal(popupEditProfile);
         })
         .catch((err) => {
             console.log(err); // выводим ошибку в консоль
+        })
+        .finally(() => {
+            renderLoading({ modal: popupEditProfile, popupBtn: '.popup__button', isLoading: false, createBtn: false });
         });
 }
 
@@ -140,8 +160,8 @@ formProfile.addEventListener('submit', handleFormSubmitProfile);
 
 //функционал папапа для добавления новой карточки
 addImgPopup.addEventListener('click', () => {
-    functionsPopup(popupEditCards);
-    clearValidation(popupEditCards, { errorMsgClear: false, enableBtn: false }, formSelectorsForFunct);
+    openModal(popupEditCards);
+    clearValidation(popupEditCards, {errorMsgClear: false}, formSelectorsForFunct);
 });
 
 // //функция заполнения карточки для добавления новой карточки
@@ -159,12 +179,14 @@ function handleFormSubmitImg(evt) {
             cardContainer.prepend(createCard(cardInfo, cardFunctions, cardInfo.owner._id, cardInfo.owner._id, cardInfo._id, configAPIBase));
         })
         .then(() => {
-            renderLoading({ modal: popupEditCards, popupBtn: '.popup__button', isLoading: false, createBtn: true });
             closeModal(popupEditCards);
             formImg.reset();
         })
         .catch((err) => {
             console.log(err); // выводим ошибку в консоль
+        })
+        .finally(() => {
+            renderLoading({ modal: popupEditCards, popupBtn: '.popup__button', isLoading: false, createBtn: true });
         });
 }
 

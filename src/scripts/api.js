@@ -60,19 +60,6 @@ export const configAPIBase = {
     .then(getResponseData);
   });
   
-  export function renderLoading(configRender) {
-    let btn = configRender.modal.querySelector(configRender['popupBtn']);
-    if (configRender['isLoading']) {
-        btn.textContent = 'Сохранение...';
-    } else {
-        if (configRender['createBtn']) {
-            btn.textContent = 'Создать';
-        } else {
-            btn.textContent = 'Сохранить';
-        }
-    }
-  }
-  
   //функция удаления карточки с сервера
   export function deletCard(cardId, configAPIBase) {
     return fetch(`${configAPIBase['baseURL']}cards/${cardId}`, {

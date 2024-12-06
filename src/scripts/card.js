@@ -36,8 +36,11 @@ export function createCard(item, callbacks, personAddId, itemOwnerId, cardId, co
         callbacks
             .del(cardId, configAPIBase)
             .then(() => {
-            cardElement.remove();
-        });
+                cardElement.remove();
+            })
+            .catch((err) => {
+                console.log(err); // выводим ошибку в консоль
+            });
     });
     likeElement.addEventListener('click', () => {
         callbacks.like(likeElement, cardId, countLikes, configAPIBase, callbacks);
@@ -46,26 +49,32 @@ export function createCard(item, callbacks, personAddId, itemOwnerId, cardId, co
 
     // Возврат готовой к выводу карточки
     return cardElement;
-}
+};
 
 export function likeCardElemt(cardElementLike, cardId, countLikes, configAPIBase, callbacks) {
     if (cardElementLike.classList.contains('card__like-button_is-active')) {
-        cardElementLike.classList.remove('card__like-button_is-active');
         callbacks
             .delAPI(cardId, configAPIBase)
             //обновление количества лайков
             .then((ans) => {
                 const count = ans.likes.length;
                 countLikes.textContent = count;
+                cardElementLike.classList.remove('card__like-button_is-active');
+            })
+            .catch((err) => {
+                console.log(err); // выводим ошибку в консоль
             });
     } else {
-        cardElementLike.classList.add('card__like-button_is-active');
         callbacks
             .likeAPI(cardId, configAPIBase)
             .then((ans) => {
-            //обновление количества лайков
-            const count = ans.likes.length;
-            countLikes.textContent = count;
-        });
+                //обновление количества лайков
+                const count = ans.likes.length;
+                countLikes.textContent = count;
+                cardElementLike.classList.add('card__like-button_is-active');
+            })
+            .catch((err) => {
+                console.log(err); // выводим ошибку в консоль
+            });
     }
-}
+};
